@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8" />
+	<title>clock</title>
+</head>
+<style>
+	*{
+		padding: 0;
+		margin: 0;
+	}
+	#canvas{
+		position: absolute;
+		top:0;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		margin: auto;
+		background: #ccc;
+	}
+</style>
+<body>
+	<canvas id="canvas" width="600" height="600"></canvas>
+	
+	<script type="text/javascript">
+	var canvas = document.querySelector('#canvas');
+	var cns = canvas.getContext('2d');
+	
+	clock();
+	setInterval(clock,1000);
+	function clock(){
+		cns.save();
+		cns.clearRect(0,0,600,600);
+		cns.translate(300,300);
+		//画外圆
+		cns.beginPath();
+		cns.arc(0,0,200,0,Math.PI*2);
+		cns.strokeStyle='#666';
+		cns.lineWidth='8';
+		cns.stroke();
+		cns.closePath();
+		
+		//内圆
+		cns.beginPath();
+		cns.strokeStyle='#666';
+		cns.lineWidth = '4';
+		cns.arc(0,0,180,0,Math.PI*2);
+		cns.stroke();
+		cns.closePath();
+		
+		//获取时间
+		var data = new Date();
+		var h = data.getHours();
+		h = h>12?h-12:h;
+		var m = data.getMinutes();
+		var s = data.getSeconds();
+		
+		//指针旋转角度		
+		var hdeg = h*Math.PI/6 + m/60*Math.PI/6 + s/3600*Math.PI/6;
+		var mdeg = m*Math.PI/30 + s/60*Math.PI/30;
+		var sdeg = s*Math.PI/30;
+
+		//画时刻
+		//整点时刻
+		for(var i=0;i<12;i++){
+			cns.beginPath();
+			cns.lineTo(165,0);
+			cns.lineTo(180,0);
+			cns.lineWidth = '4'
+			cns.rotate(Math.PI/6);
+			cns.stroke();
+			cns.closePath();
+		}
+		
+		//分钟时刻
+		for(var i=0;i<60;i++){
+			if(i%5!=0){
+				cns.beginPath();
+				cns.lineTo(170,0);
+				cns.lineTo(180,0);
+				cns.lineWidth = '2';
+				cns.rotate(Math.PI/30);
+				cns.stroke();
+				cns.closePath();
+			}else{
+				cns.beginPath();
+				cns.rotate(Math.PI/30);
+				cns.closePath();
+			}		
+		}
+		
+		//画时针
+		cns.save();
+		cns.beginPath();
+		cns.rotate(hdeg);
+		cns.rotate(-Math.PI/2);
+		cns.lineTo(-10,0);
+		cns.lineTo(90,0);
+		cns.lineWidth = '6';
+		cns.lineCap = 'round';
+		cns.stroke();
+		cns.closePath();
+		cns.restore();
+		//画分针
+		cns.save();
+		cns.beginPath();
+		cns.rotate(mdeg);
+		cns.rotate(-Math.PI/2);
+		cns.lineTo(-10,0);
+		cns.lineTo(120,0);
+		cns.lineWidth = '4';
+		cns.lineCap = 'round';
+		cns.stroke();
+		cns.closePath();
+		cns.restore();
+		//画秒针
+		cns.save();
+		cns.beginPath();
+		cns.rotate(sdeg);
+		cns.rotate(-Math.PI/2);
+		cns.arc(0,0,5,0,Math.PI*2);
+		cns.lineTo(-10,0);
+		cns.lineTo(150,0);
+		cns.strokeStyle = 'red';
+		cns.lineWidth = '2';
+		cns.lineCap = 'round';
+		cns.stroke();
+		cns.closePath();
+		cns.restore();
+		cns.restore();
+		
+	}
+		/*var canvas = document.querySelector('#canvas');
+		var cns = canvas.getContext('2d');
+		clock();
+		setInterval(clock,1000);
+		function clock(){
+			cns.save();
+			cns.clearRect(0,0,600,600);
+			cns.translate(300,300);//圆心处在600,600，中间
+			
+			//外圆
+			cns.beginPath();
+			cns.strokeStyle='#666';
+			cns.lineWidth = '8';
+			cns.arc(0,0,200,0,Math.PI*2);		
+			cns.stroke();
+			cns.closePath();
+			
+			//内圆
+			cns.beginPath();
+			cns.arc(0,0,180,0,Math.PI*2);
+			cns.strokeStyle='#666';
+			cns.lineWidth = '4';
+			cns.stroke();
+			cns.closePath();
+			//获取时间
+			var data = new Date();
+			var h = data.getHours();
+			h = h>12?h-12:h;
+			var m = data.getMinutes();
+			var s = data.getSeconds();
+			
+			//指针旋转角度
+			var hdeg = h*Math.PI/6 +  m/60*Math.PI/6 + s/3600*Math.PI/6;
+			var mdeg = m*Math.PI/30 + s/60*Math.PI/30;
+			var sdeg = s*Math.PI/30;
+			
+			//画时刻
+			//整点时刻
+			for(var i=0;i<12;i++){
+				cns.beginPath();
+				cns.lineTo(165,0);
+				cns.lineTo(180,0);
+				cns.lineWidth = '4';
+				cns.rotate(Math.PI/6);
+				cns.closePath();
+				cns.stroke();
+			}
+			//分钟时刻
+			for(var i=0;i<60;i++){
+				if(i%5!=0){		
+					cns.beginPath();
+					cns.lineTo(170,0);
+					cns.lineTo(180,0);
+					cns.lineWidth = '2';
+					cns.rotate(Math.PI/30);
+					cns.closePath();
+					cns.stroke();
+				}else{
+					cns.beginPath();
+					cns.rotate(Math.PI/30);
+					cns.closePath();
+				}
+			}
+			
+			//时针
+			cns.save();
+			cns.beginPath();
+			cns.rotate(hdeg);
+			cns.rotate(-Math.PI/2);
+			cns.lineTo(-10,0);
+			cns.lineTo(90,0);
+			cns.lineWidth = '6';
+			cns.lineCap = 'round';
+			cns.stroke();
+			cns.closePath();
+			cns.restore();
+			
+			//分针
+			cns.save();
+			cns.beginPath();
+			cns.rotate(mdeg);
+			cns.rotate(-Math.PI/2);
+			cns.lineTo(-10,0);
+			cns.lineTo(120,0);
+			cns.lineWidth = '4';
+			cns.lineCap = 'round';
+			cns.stroke();
+			cns.closePath();
+			cns.restore();
+			
+			//秒针
+			cns.save();
+			cns.beginPath();
+			cns.rotate(sdeg);
+			cns.rotate(-Math.PI/2);
+			cns.lineTo(-10,0);
+			cns.lineTo(150,0);
+			cns.lineWidth = '2';
+			cns.lineCap = 'round';
+			cns.strokeStyle = 'red';
+			cns.arc(0,0,5,0,Math.PI*2);
+			cns.fillStyle = 'red';
+			cns.stroke();
+			cns.closePath();
+			cns.restore();
+			cns.restore();
+			
+		}
+*/
+	</script>
+</body>
+</html>
